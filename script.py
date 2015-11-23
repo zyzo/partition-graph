@@ -28,8 +28,6 @@ print "Starting points: " + str(start)
 partitions = [[x] for x in start]
 
 ## Cost function
-def individual_cost(partition, node):
-    for (p in partition):
 def cost(partitions, g, node):
     res = []
     for p in partitions:
