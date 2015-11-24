@@ -33,10 +33,9 @@ def weight(v1, v2):
 ## Pistes d'amélioration possibles : choisir les starting points qui ne sont pas connectés
 P = int(sys.argv[2])
 start = []
-#for idx in range(P):
-#    start.append(ge[idx][0]+1)
-#    visited[ge[idx][0]+1] = True
-start = [6,1,4]
+for idx in range(P):
+    start.append(ge[idx][0]+1)
+    visited[ge[idx][0]+1] = True
 for id in start :
     visited[id] = True
 print "Starting points: " + str(start)
