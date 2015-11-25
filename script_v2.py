@@ -2,11 +2,13 @@
 # -*- coding: utf-8 -*-
 
 import sys
+import eval
+import input
 
-## Read inputs
+# Read inputs
 
 data = open(sys.argv[1], 'r')
-#data.readline()
+# data.readline()
 n, e = [int(x) for x in data.readline().split()]
 g, sum_edges = [[]], [[]]
 ge = []
@@ -20,7 +22,7 @@ for idx, line in enumerate(data):
 data.close()
 ge = sorted(ge, key=lambda node: node[1], reverse=True)
 
-## Cost function : calculer distance "directe"
+# Cost function : calculer distance "directe"
 def cost(partition, g, node):
     cnt = 0
     for edge in g[node]:
@@ -46,6 +48,8 @@ for pid, partition in enumerate(partitions):
         if (not visited[edge[0]]):
             neighbours.append([pid, edge[0], cost(partition, g, edge[0])])
 neighbours = sorted(neighbours, key=lambda node: node[2])
+
+
 def update_neighbours(neighbours, pid, inserted):
     neighbours = [x for x in neighbours if x[1] != inserted]
     n_inserted = [x[0] for x in g[inserted]]
@@ -57,14 +61,17 @@ def update_neighbours(neighbours, pid, inserted):
     for ni in n_inserted:
         if (not visited[ni]):
             neighbours.append([pid, ni, cost(partitions[pid], g, ni)])
+    neighbours = sorted(neighbours, key=lambda node: node[2])
     return neighbours
 ## Launch greedy algorithm
-print neighbours
+#print neighbours
 while neighbours:
-##for i in range(2):
     next_node = neighbours.pop()
     visited[next_node[1]] = True
     partitions[next_node[0]].append(next_node[1])
     neighbours = update_neighbours(neighbours, next_node[0], next_node[1])
-    print "ajouté ", next_node[1], "dans partition ", partitions[next_node[0]]
-print partitions
+    # print "ajouté ", next_node[1], "dans partition ", partitions[next_node[0]]
+#print partitions
+
+ig = input.read_local(sys.argv[1])
+print "Cut : ", eval.cut(ig[2], partitions)
