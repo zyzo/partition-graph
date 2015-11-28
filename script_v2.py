@@ -55,7 +55,7 @@ def update_neighbours(neighbours, pid, inserted):
     n_inserted = [x[0] for x in g[inserted]]
     for n in neighbours:
         # mettre à jour les voisins de inserted
-        if (n[1] in n_inserted and n[0] == pid):
+        if n[1] in n_inserted and n[0] == pid:
              n[2] += weight(inserted, n[1])/float(sum_edges[n[1]])
              n_inserted.remove(n[1])
     for ni in n_inserted:
@@ -74,4 +74,5 @@ while neighbours:
 #print partitions
 
 ig = input.read_local(sys.argv[1])
+print partitions
 print "Cut : ", eval.cut(ig[2], partitions)
