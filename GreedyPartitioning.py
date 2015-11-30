@@ -28,7 +28,7 @@ class GreedyPartitioning:
             while y in start[:x]:
                 y = random.randint(1, n)
             start.append(y)
-        # start = [7, 1, 6]
+        start = [2204, 1613, 463]
         for id in start:
             self.visited[id] = True
         print "Starting points: " + str(start)
@@ -42,15 +42,21 @@ class GreedyPartitioning:
         neighbours = sorted(neighbours, key=lambda node: node[3])
         ## Launch greedy algorithm
         # print neighbours
-        self.partitions_count = [1 for x in self.partitions]
+        self.partitions_count = [0.5 for x in self.partitions]
         self.partitions_count_sum = sum(self.partitions_count)
         while neighbours:
             next_node = neighbours.pop()
             self.visited[next_node[1]] = True
             self.partitions[next_node[0]].append(next_node[1])
-            self.partitions_count[next_node[0]] += 1
-            self.partitions_count_sum += 1
+            self.update_partition_cost(next_node[0], next_node[1])
             neighbours = self.update_neighbours(neighbours, next_node[0], next_node[1])
+
+    def update_partition_cost(self, pid, i):
+        inc = sum([x[1] for x in self.g[i] if x[0] in self.partitions[pid]])
+        self.partitions_count[pid] += inc
+        self.partitions_count_sum += inc
+        #self.partitions_count[pid] += 1
+        #self.partitions_count_sum += 1
 
     def cost(self, partition, node):
         cnt = 0
