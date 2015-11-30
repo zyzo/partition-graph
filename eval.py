@@ -29,9 +29,6 @@ def ratio(g, p):
     # Initialize array of size len(p)*len(p)
     sum_ratios = 0
     for s1 in p:
-        complement_s1 = [[x for x in s] for s in p if s != s1]
-        print complement_s1
-        print cut(s1, complement_s1)
-        print weight(g,s1)
-        sum_ratios += cut(s1, complement_s1)/(weight(g, s1))
+        complement_s1 = [x+1 for x in range(len(g)) if not x+1 in s1]
+        sum_ratios += single_cut(g, s1, complement_s1)/float((weight(g, s1)))
     return  sum_ratios
