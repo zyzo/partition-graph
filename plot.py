@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import input
 import sys
 from GreedyPartitioning import GreedyPartitioning
+import eval
 def draw_graph(graph):
 
     nodes = [x for x in range(1,graph[0]+1)]
@@ -44,4 +45,5 @@ def draw_partitioned_graph(graph, partitions,
 g = input.read_local(sys.argv[1])
 # draw_graph(g)
 gp = GreedyPartitioning(sys.argv[1], sys.argv[2])
+print "Cut : ", eval.cut(g[2], gp.get_partitions())
 draw_partitioned_graph(g, gp.get_partitions(), draw_label=False, node_size=sys.argv[3])

@@ -25,9 +25,9 @@ class TestEvalMethod(unittest.TestCase):
         self.assertEqual(eval.weight(self.g,[1,2,3]), 3)
         self.assertEqual(eval.weight(self.g,[1,2,3,4,5,6,7]), 10)
 
-#    def test_ratio(self):
-#        self.assertEqual(eval.ratio(self.g,[[1,2,3,5,6,7],[4]]), 1)
-#        self.assertEqual(eval.ratio(self.g,[[1,2],[3,5,6,7],[4]]), 4)
-#        self.assertEqual(eval.ratio(self.g,[[1],[2],[3],[4],[5],[6],[7]]), 10)
+    def test_ratio(self):
+        self.assertEqual(eval.ratio(self.g,[[1,2,3,5,7],[4,6]]), 5)
+        # self.assertEqual(eval.ratio(self.g,[[1,2],[3,5,6,7],[4]]), 4)
+        # self.assertEqual(eval.ratio(self.g,[[1],[2],[3],[4],[5],[6],[7]]), 10)
 if __name__ == '__main__':
     unittest.main()
