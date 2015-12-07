@@ -1,7 +1,9 @@
-from GreedyPartitioning import GreedyPartitioning
 import glob
-import input
+
 import eval
+import input
+from GreedyPartitioning import GreedyPartitioning
+
 print glob.glob("./graph/*")
 data = open("graph_link.txt", 'r')
 

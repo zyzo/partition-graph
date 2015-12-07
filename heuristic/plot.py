@@ -1,9 +1,13 @@
-import networkx as nx
 import matplotlib.pyplot as plt
-import input
 import sys
-from GreedyPartitioning import GreedyPartitioning
+
+import networkx as nx
+
 import eval
+import input
+from GreedyPartitioning import GreedyPartitioning
+
+
 def draw_graph(graph):
 
     nodes = [x for x in range(1,graph[0]+1)]
