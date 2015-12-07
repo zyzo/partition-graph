@@ -1,9 +1,10 @@
 import random
-
+import urllib
 
 class GreedyPartitioning:
-    def __init__(self, graph_filename, partition_number):
-        data = open(graph_filename, 'r')
+    def __init__(self, graph_filename, partition_number, is_url=False):
+        if not is_url: data = open(graph_filename, 'r')
+        else: data = urllib.urlopen(graph_filename)
         # data.readline()
         n, e = [int(x) for x in data.readline().split()]
         self.g, self.sum_edges = [[]], [[]]
