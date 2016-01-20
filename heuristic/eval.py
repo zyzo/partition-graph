@@ -1,34 +1,27 @@
-# -*- coding: utf-8 -*-
-import numpy
-# Cut of two subsets s1, s2
-def single_cut(g, s1, s2):
-    res = 0
-    for node in s1:
-        for n, cost in g[node-1]:
-            if n in s2:
-                res += cost
-    return res
-# Cut of a partition p
-def cut(g, p):
-    res = 0
-    for i1, s1 in enumerate(p):
-        for i2 in range(i1 + 1,len(p)):
-            res += single_cut(g,s1,p[i2])
-    return res
+from greedy import Greedy
+import numpy as np
 
-def weight(g, s):
-    res = 0
-    for node in s:
-        for n, cost in g[node - 1]:
-            if n in s:
-                res += cost
-    return res / 2
+# Cut of a graph of two partition p1, p2
+def cut(g, p1=None, p2=None):
+    if p1 == None and p2 == None:
+        return sum([sum([cut(g, p1, p2) for p2 in range(p1+1, g.k)]) for p1 in range(g.k)])
+    elif p2 == None:
+        return sum([cut(g, p1, p2) for p2 in range(g.k) if p1 != p2])
+    elif p1 == None:
+        return cut(g, p2)
+    else:
+        return sum([g[e[0]][e[1]]['weight'] for e in g.C[p1][p2]])
 
-# # Cut ratio of a partition p
-def ratio(g, p):
+# Weight of a partition p
+def weight(g, p):
+    return sum([g[e[0]][e[1]]['weight'] for e in g.E[p]])
+
+# Cut ratio of a graph
+def ratio(g):
+    return sum([cut(g, p)/float(weight(g, p)) for p in range(g.k)])
     # Initialize array of size len(p)*len(p)
     sum_ratios = 0
     for s1 in p:
         complement_s1 = [x+1 for x in range(len(g)) if not x+1 in s1]
-        sum_ratios += single_cut(g, s1, complement_s1)/float((weight(g, s1)))
+        sum_ratios += cut(g, s1, complement_s1)/float((weight(g, s1)))
     return  sum_ratios
