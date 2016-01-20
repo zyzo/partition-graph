@@ -1,3 +1,4 @@
+import random as rd
 import networkx as nx
 import matplotlib.pyplot as plt
 from graph import Graph
@@ -51,23 +52,30 @@ class Neighborhood:
         return self.heap.pop()
 
 class Greedy(Graph):
-    def select(self, k=2):
-        w = int(self.number_of_nodes()/(k + 1))
-        edges = nx.dfs_edges(self, 1)
-        nodes = [1]
-        for n in range(1, k):
-            for e in range(w):
-                edge = edges.next()
-            nodes.append(edge[1])
+    def select(self, k=2, rand=False):
+        if rand:
+            nodes = []
+            while len(nodes) != k:
+                n = rd.randint(1, k)
+                if not n in nodes:
+                    nodes.append(n)
+        else:
+            w = int(self.number_of_nodes()/(k + 1))
+            edges = nx.dfs_edges(self, 1)
+            nodes = [1]
+            for n in range(1, k):
+                for e in range(w):
+                    edge = edges.next()
+                nodes.append(edge[1])
         return nodes
             
-    def partition(self, k=2):
+    def partition(self, k=2, rand=False):
         self.k = k
         self.P = []
         for n in self.nodes_iter():
             self.node[n]['degree'] = self.degree(n) 
             self.node[n]['partition'] = None
-        start = self.select(k)
+        start = self.select(k, rand)
         for p, n in enumerate(start):
             self.P.append([n])
             self.node[n]['partition'] = p

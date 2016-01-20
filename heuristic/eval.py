@@ -19,9 +19,3 @@ def weight(g, p):
 # Cut ratio of a graph
 def ratio(g):
     return sum([cut(g, p)/float(weight(g, p)) for p in range(g.k)])
-    # Initialize array of size len(p)*len(p)
-    sum_ratios = 0
-    for s1 in p:
-        complement_s1 = [x+1 for x in range(len(g)) if not x+1 in s1]
-        sum_ratios += cut(g, s1, complement_s1)/float((weight(g, s1)))
-    return  sum_ratios
