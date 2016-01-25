@@ -1,10 +1,10 @@
 import random as rd
 import networkx as nx
 import matplotlib.pyplot as plt
-from graph import Graph
+from graph.partition import Partition, division
 
 class Neighborhood:
-    def __init__(self, graph, start):
+    def __init__(self, graph, start, select='weight'):
         self.graph = graph
         self.heap = []
         self.sum = 0
@@ -16,7 +16,7 @@ class Neighborhood:
                 if graph.node[n]['partition'] == None:
                     c = self.cost(n, p)
                     self.heap.append({'partition':p, 'node':n, 'cost':c, 'weight':c})
-        self.heap = sorted(self.heap, key=lambda label: label['weight'])
+        self.heap = sorted(self.heap, key=lambda label: label[select])
 
     def cost(self, node, partition):
         weight = 0
@@ -25,7 +25,7 @@ class Neighborhood:
                 weight += self.graph[node][n]['weight']
         return weight / float(self.graph.node[node]['degree'])
 
-    def update(self, partition, node):
+    def update(self, partition, node, select='weight'):
         neighbors = self.graph.neighbors(node)
         inc = sum([self.graph[node][n]['weight'] for n in neighbors if self.graph.node[n]['partition'] == partition])
         self.part[partition] += inc;
@@ -43,7 +43,7 @@ class Neighborhood:
             if self.graph.node[n]['partition'] == None:
                 c = self.cost(n, partition)
                 self.heap.append({'partition':partition, 'node':n, 'cost':c, 'weight':c * self.sum / self.part[partition]})
-        self.heap = sorted(self.heap, key=lambda label: label['weight'])
+        self.heap = sorted(self.heap, key=lambda label: label[select])
             
     def empty(self):
         return len(self.heap) == 0
@@ -51,12 +51,12 @@ class Neighborhood:
     def pop(self):
         return self.heap.pop()
 
-class Greedy(Graph):
+class Greedy(Partition):
     def select(self, k=2, rand=False):
         if rand:
             nodes = []
             while len(nodes) != k:
-                n = rd.randint(1, k)
+                n = rd.randint(1, self.number_of_nodes())
                 if not n in nodes:
                     nodes.append(n)
         else:
@@ -69,55 +69,25 @@ class Greedy(Graph):
                 nodes.append(edge[1])
         return nodes
             
-    def partition(self, k=2, rand=False):
+    def partition(self, k=2, select='weight', rand=False):
         self.k = k
-        self.P = []
         for n in self.nodes_iter():
             self.node[n]['degree'] = self.degree(n) 
             self.node[n]['partition'] = None
         start = self.select(k, rand)
         for p, n in enumerate(start):
-            self.P.append([n])
             self.node[n]['partition'] = p
-        neighbors =  Neighborhood(self, start)
+        neighbors =  Neighborhood(self, start, select)
         while not neighbors.empty():
             label = neighbors.pop()
             n = label['node']
             p = label['partition']
             self.node[n]['partition'] = p
-            self.P[p].append(n)
-            neighbors.update(p, n)
-
-    def labelize(self):
-        self.E = [[] for x in range(self.k + 1)]
-        self.C = [[[] for y in range(self.k)] for x in range(self.k)]
-        for x in range(self.k):
-            for y in range(x, self.k):
-                self.C[x][y] = self.C[y][x]
-        for e in self.edges_iter():
-            p0 = self.node[e[0]]['partition']
-            p1 = self.node[e[1]]['partition']
-            if p0 == p1:
-                self.E[p0].append(e)
-            else:
-                self.C[p0][p1].append(e)
-                self.E[-1].append(e)
+            neighbors.update(p, n, select)
+        self.compute()
         
 
-    def draw(self, label=False):
-        layout = nx.spring_layout(self)
-        if label:
-            nx.draw_networkx_labels(self, layout)
-        colors = ['r', 'b', 'y', 'g', 'c', 'm', 'k', '#eeffcc']
-        for p in range(self.k):
-            nx.draw_networkx_nodes(self, layout,
-                                   nodelist=self.P[p], 
-                                   node_color=colors[p],
-                                   alpha=0.8)
-            nx.draw_networkx_edges(self, layout,
-                                   edgelist=self.E[p],
-                                   edge_color=colors[p],
-                                   width=3, alpha=0.8)
-        nx.draw_networkx_edges(self, layout, edgelist=self.E[-1])
-        plt.show()
+
+
+
             

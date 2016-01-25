@@ -22,6 +22,13 @@ class Graph(nx.Graph):
         data.close()
         return self
 
+    def sample(self):
+        G = nx.karate_club_graph()
+        for e in G.edges_iter():
+            self.add_edge(e[0], e[1])
+            self[e[0]][e[1]]['weight'] = 1
+        return self
+
     def draw(self, label=False):
         layout = nx.spring_layout(self)
         nx.draw_networkx_nodes(self, layout)
